@@ -1,1562 +1,186 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuvia - Agenda Digital para Negocios de Belleza</title>
-    <style>
-        /* ==========================================
-           VARIABLES Y ESTILOS BASE
-           ========================================== */
-        :root {
-            --primary: #C78280;
-            --primary-dark: #B36F6D;
-            --primary-light: #F8ECEB;
-            --bg-main: #FAF8F5;
-            --card-bg: #FFFFFF;
-            --text-main: #2C2A29;
-            --text-muted: #6E6A67;
-            --border-color: #EFE8DF;
-            --success: #10B981;
-            --success-light: #D1FAE5;
-            --danger: #E53E3E;
-            --whatsapp: #25D366;
-            --radius-lg: 20px;
-            --radius-md: 14px;
-            --shadow-subtle: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-            --shadow-hover: 0 20px 30px -10px rgba(199, 130, 128, 0.2);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            padding: 0 1rem;
-        }
-
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .items-center { align-items: center; }
-        .justify-between { justify-content: space-between; }
-        .gap-2 { gap: 0.5rem; }
-        .gap-3 { gap: 0.75rem; }
-        .gap-4 { gap: 1rem; }
-        .gap-6 { gap: 1.5rem; }
-        .hidden { display: none !important; }
-
-        .grid { display: grid; }
-        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
-
-        @media (min-width: 768px) {
-            .container { padding: 0 1.5rem; }
-            .md-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .md-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-            .hero-grid { grid-template-columns: 7fr 5fr; }
-        }
-
-        /* ANIMACIONES */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.35s ease-out forwards;
-        }
-
-        /* ==========================================
-           BOTONES Y COMPONENTES
-           ========================================== */
-        .btn {
-            font-weight: 600;
-            padding: 0.75rem 1.25rem;
-            border-radius: var(--radius-md);
-            border: none;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(199, 130, 128, 0.3);
-        }
-        .btn-primary:hover { 
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(199, 130, 128, 0.4);
-        }
-
-        .btn-secondary {
-            background-color: #FFFFFF;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-        .btn-secondary:hover { 
-            background-color: #F8F5F0;
-            transform: translateY(-1px);
-        }
-
-        .btn-whatsapp {
-            background-color: var(--whatsapp);
-            color: white;
-            font-weight: 600;
-            padding: 0.45rem 0.8rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-size: 0.78rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
-        }
-        .btn-whatsapp:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(37, 211, 102, 0.35);
-        }
-
-        .btn-complete {
-            background-color: var(--success);
-            color: white;
-            font-weight: 600;
-            padding: 0.45rem 0.8rem;
-            border-radius: 10px;
-            font-size: 0.78rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .btn-complete:hover {
-            transform: translateY(-1px);
-            opacity: 0.9;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 1.25rem;
-            box-shadow: var(--shadow-subtle);
-            transition: all 0.3s ease;
-        }
-
-        /* TARJETAS DE SERVICIOS CON IMAGEN */
-        .service-card {
-            padding: 0;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .service-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .service-img-wrapper {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            background: #F3EFE6;
-        }
-
-        .service-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .service-card:hover .service-img {
-            transform: scale(1.05);
-        }
-
-        .service-badge-duration {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(4px);
-            color: var(--text-main);
-            padding: 0.25rem 0.6rem;
-            border-radius: 8px;
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        .service-card-body {
-            padding: 1.1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            flex-grow: 1;
-            justify-content: space-between;
-        }
-
-        .input-field {
-            width: 100%;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 16px;
-            border-radius: 12px;
-            padding: 0.85rem 1rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-field:focus { border-color: var(--primary); }
-
-        .badge {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            padding: 0.35rem 0.85rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-
-        .badge-success {
-            background: var(--success-light);
-            color: var(--success);
-            padding: 0.3rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-
-        /* CATEGORÍAS DESTACADAS */
-        .category-card {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-            padding: 0.85rem;
-            border-radius: 16px;
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-        }
-
-        .category-img-box {
-            width: 70px;
-            height: 70px;
-            min-width: 70px;
-            border-radius: 14px;
-            overflow: hidden;
-        }
-        .category-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* HEADER PÚBLICO & HERO */
-        header {
-            background: #FFFFFF;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            min-height: 70px;
-            display: flex;
-            align-items: center;
-        }
-
-        .brand-logo {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            background: var(--primary);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.15rem;
-            box-shadow: 0 4px 10px rgba(199, 130, 128, 0.4);
-        }
-
-        .hero {
-            padding: 3rem 0;
-            background: radial-gradient(circle at top right, #FAF0EF 0%, transparent 60%);
-        }
-
-        .hero h1 {
-            font-size: 2.1rem;
-            font-weight: 800;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin: 0.75rem 0;
-        }
-
-        @media (min-width: 768px) {
-            .hero { padding: 4rem 0; }
-            .hero h1 { font-size: 2.75rem; }
-        }
-
-        .hero p {
-            font-size: 1rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-
-        /* LAYOUT DASHBOARD PRIVADO */
-        .dashboard-layout {
-            display: flex;
-            flex-direction: column;
-            min-height: calc(100vh - 70px);
-        }
-
-        .sidebar {
-            width: 100%;
-            background: white;
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sidebar nav {
-            display: flex;
-            overflow-x: auto;
-            gap: 0.5rem;
-            padding-bottom: 0.25rem;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .sidebar nav::-webkit-scrollbar { display: none; }
-
-        .sidebar nav button {
-            padding: 0.65rem 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            background: none;
-            border: none;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-        }
-
-        .sidebar nav button.active {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-        }
-
-        .main-content {
-            flex-grow: 1;
-            padding: 1.5rem 1rem;
-            overflow-y: auto;
-        }
-
-        @media (min-width: 768px) {
-            .dashboard-layout { flex-direction: row; }
-            .sidebar {
-                width: 260px;
-                border-bottom: none;
-                border-right: 1px solid var(--border-color);
-                padding: 1.5rem;
-                justify-content: space-between;
-            }
-            .sidebar nav {
-                flex-direction: column;
-                overflow-x: visible;
-            }
-            .sidebar nav button {
-                width: 100%;
-                text-align: left;
-            }
-            .main-content { padding: 2.5rem; }
-        }
-
-        /* TABLAS Y MODALES */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.85rem;
-            min-width: 500px;
-        }
-
-        th {
-            background: #F8F5F0;
-            color: #555;
-            font-weight: 600;
-            padding: 0.85rem;
-            border-bottom: 1px solid #EFE8DF;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-        }
-
-        td {
-            padding: 0.95rem 0.85rem;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-main);
-        }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(44, 42, 41, 0.45);
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            padding: 1rem;
-        }
-
-        .modal-box {
-            background: white;
-            width: 100%;
-            max-width: 480px;
-            border-radius: var(--radius-lg);
-            padding: 1.75rem;
-            border: 1px solid var(--border-color);
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 1.25rem;
-            right: 1.25rem;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .role-tab-btn {
-            flex: 1;
-            padding: 0.65rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-main);
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .role-tab-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-    </style>
-</head>
-<body>
-
-    <!-- NAVBAR PÚBLICA -->
-    <header id="public-header">
-        <div class="container flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="brand-logo">N</div>
-                <span style="font-size: 1.35rem; font-weight: 800; letter-spacing: -0.01em;">Nuvia</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="showAuthModal('client')" class="btn btn-secondary" style="padding: 0.5rem 0.9rem; font-size: 0.85rem;">Soy Cliente</button>
-                <button onclick="showAuthModal('admin')" class="btn btn-primary" style="padding: 0.5rem 0.9rem; font-size: 0.85rem;">Administrador</button>
-            </div>
-        </div>
-    </header>
-
-    <!-- VISTA PÚBLICA PRINCIPAL -->
-    <div id="public-view" class="fade-in">
-        <section class="hero">
-            <div class="container grid grid-cols-1 hero-grid gap-8 items-center">
-                <div>
-                    <span class="badge">Agenda Digital de Citas</span>
-                    <h1>Reserva tu cita de belleza fácil y rápido.</h1>
-                    <p>Encuentra tus servicios de cuidado facial, peluquería, manicura y estética, y agenda tu horario disponible en segundos.</p>
-                    <div class="flex items-center gap-4" style="margin-top: 1.75rem;">
-                        <button onclick="showAuthModal('client')" class="btn btn-primary" style="width: 100%; max-width: 200px;">Agendar mi Cita</button>
-                        <button onclick="showAuthModal('admin')" class="btn btn-secondary" style="width: 100%; max-width: 200px;">Acceso Admin</button>
-                    </div>
-                </div>
-                <div>
-                    <div class="card">
-                        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Categorías Especializadas</h3>
-                        <div class="flex flex-col gap-3">
-                            <div class="category-card">
-                                <div class="category-img-box">
-                                    <img src="https://i.postimg.cc/BjTN9TP7/Gemini-Generated-Image-cky1vzcky1vzcky1.jpg" alt="Cuidado Facial">
-                                </div>
-                                <div>
-                                    <h4 style="font-size: 0.95rem; font-weight: 700;">Cuidado facial</h4>
-                                    <p style="font-size: 0.8rem; color: var(--text-muted);">Limpiezas, hidratación y tratamientos.</p>
-                                </div>
-                            </div>
-                            <div class="category-card">
-                                <div class="category-img-box">
-                                    <img src="https://i.postimg.cc/FYyG5ykn/Gemini-Generated-Image-79fva679fva679fv.jpg" alt="Peluquería">
-                                </div>
-                                <div>
-                                    <h4 style="font-size: 0.95rem; font-weight: 700;">Peluquería y barbería</h4>
-                                    <p style="font-size: 0.8rem; color: var(--text-muted);">Cortes, tintes, peinados y barba.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CATÁLOGO PÚBLICO DE SERVICIOS -->
-        <section style="padding: 3rem 0; background: white; border-top: 1px solid var(--border-color);">
-            <div class="container">
-                <div style="text-align: center; margin-bottom: 2.5rem;">
-                    <span class="badge" style="margin-bottom: 0.5rem;">Catálogo Ilustrado</span>
-                    <h2 style="font-size: 1.75rem; font-weight: 800;">Elige tu servicio y agenda tu cita</h2>
-                </div>
-                <div class="grid grid-cols-1 md-grid-2 gap-6" id="public-services-catalog">
-                    <!-- Se llena dinámicamente -->
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- PANEL DEL CLIENTE -->
-    <div id="client-dashboard" class="dashboard-layout hidden">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="flex items-center space-x-3">
-                    <div class="brand-logo" style="width:34px; height:34px; font-size:0.95rem;">N</div>
-                    <div>
-                        <span id="client-greeting-name" style="font-weight: 700; font-size: 0.85rem; display: block;">Cliente</span>
-                        <span style="font-size: 0.68rem; color: var(--primary-dark); font-weight: 600;">Modo Cliente</span>
-                    </div>
-                </div>
-                <button onclick="logout()" style="background: none; border: none; color: var(--danger); font-size: 0.8rem; font-weight: 600; cursor: pointer;">Cerrar Sesión</button>
-            </div>
-            <nav>
-                <button onclick="switchClientTab('catalog')" id="client-nav-catalog" class="active">💅 Catálogo y Reservas</button>
-                <button onclick="switchClientTab('appointments')" id="client-nav-appointments">📅 Mis Citas Agendadas</button>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <!-- TAB CLIENTE 1: CATÁLOGO -->
-            <div id="client-view-catalog" class="flex flex-col gap-6 fade-in">
-                <div>
-                    <h2 style="font-size: 1.35rem; font-weight: 700;">Servicios para Agendar</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Selecciona el servicio que deseas y elige tu horario disponible.</p>
-                </div>
-                <div class="grid grid-cols-1 md-grid-2 gap-6" id="client-services-grid"></div>
-            </div>
-
-            <!-- TAB CLIENTE 2: MIS CITAS -->
-            <div id="client-view-appointments" class="hidden flex flex-col gap-6 fade-in">
-                <div>
-                    <h2 style="font-size: 1.35rem; font-weight: 700;">Mis Citas Agendadas</h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted);">Consulta tus reservas actuales.</p>
-                </div>
-                <div class="card">
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Fecha y Hora</th>
-                                    <th>Servicio</th>
-                                    <th>Precio</th>
-                                    <th>Estado</th>
-                                    <th style="text-align: right;">Confirmación</th>
-                                </tr>
-                            </thead>
-                            <tbody id="client-appointments-table-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- PANEL DEL ADMINISTRADOR -->
-    <div id="admin-dashboard" class="dashboard-layout hidden">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="flex items-center space-x-3">
-                    <div class="brand-logo" style="width:34px; height:34px; font-size:0.95rem;">N</div>
-                    <div>
-                        <span style="font-weight: 700; font-size: 0.85rem; display: block;">Nuvia Admin</span>
-                        <span style="font-size: 0.68rem; color: var(--success); font-weight: 600;">Control Total</span>
-                    </div>
-                </div>
-                <button onclick="logout()" style="background: none; border: none; color: var(--danger); font-size: 0.8rem; font-weight: 600; cursor: pointer;">Salir</button>
-            </div>
-            <nav>
-                <button onclick="switchAdminTab('dashboard')" id="admin-nav-dashboard" class="active">🏠 Resumen</button>
-                <button onclick="switchAdminTab('calendar')" id="admin-nav-calendar">📅 Calendario</button>
-                <button onclick="switchAdminTab('appointments')" id="admin-nav-appointments">📋 Todas las Citas</button>
-                <button onclick="switchAdminTab('clients')" id="admin-nav-clients">👥 Clientes</button>
-                <button onclick="switchAdminTab('services')" id="admin-nav-services">🏷️ Editar Servicios</button>
-                <button onclick="switchAdminTab('hours')" id="admin-nav-hours">⚙️ Horarios de Atención</button>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <div class="flex justify-between items-center" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
-                <div>
-                    <h2 id="admin-page-title" style="font-size: 1.35rem; font-weight: 700;">Resumen del Día</h2>
-                    <p id="current-date-display" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;"></p>
-                </div>
-                <button onclick="openNewAppointmentModal('admin')" class="btn btn-primary" style="padding: 0.6rem 1rem; font-size: 0.85rem;">+ Agendar Cita Admin</button>
-            </div>
-
-            <!-- TAB ADMIN 1: RESUMEN -->
-            <div id="admin-view-dashboard" class="flex flex-col gap-6 fade-in">
-                <div class="grid grid-cols-1 md-grid-3 gap-4">
-                    <div class="card flex justify-between items-center">
-                        <div>
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Citas Hoy</p>
-                            <h3 id="stat-today-count" style="font-size: 1.75rem; font-weight: 700; margin-top: 0.1rem;">0</h3>
-                        </div>
-                    </div>
-                    <div class="card flex justify-between items-center">
-                        <div>
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ingresos Hoy</p>
-                            <h3 id="stat-today-income" style="font-size: 1.75rem; font-weight: 700; margin-top: 0.1rem;">$0</h3>
-                        </div>
-                    </div>
-                    <div class="card flex justify-between items-center">
-                        <div>
-                            <p style="font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Clientes</p>
-                            <h3 id="stat-clients-count" style="font-size: 1.75rem; font-weight: 700; margin-top: 0.1rem;">0</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3 style="font-weight: 700; font-size: 1rem; margin-bottom: 1rem;">Próximas Reservas de Hoy</h3>
-                    <div id="admin-dashboard-appointments-list" class="flex flex-col gap-3"></div>
-                </div>
-            </div>
-
-            <!-- TAB ADMIN 2: CALENDARIO -->
-            <div id="admin-view-calendar" class="hidden flex flex-col gap-6 fade-in">
-                <div class="card">
-                    <div class="flex justify-between items-center" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
-                        <h3 style="font-weight: 700; font-size: 1rem;">Selecciona una Fecha</h3>
-                        <div class="flex items-center gap-2" style="width: 100%; max-width: 320px;">
-                            <input type="date" id="calendar-date-filter" onchange="renderAdminCalendarView()" class="input-field" style="padding: 0.5rem 0.75rem;">
-                            <button onclick="openNewAppointmentModal('admin')" class="btn btn-primary" style="padding: 0.55rem 0.85rem; font-size: 0.8rem;">Agendar</button>
-                        </div>
-                    </div>
-                    <div id="calendar-day-schedule" class="flex flex-col gap-3"></div>
-                </div>
-            </div>
-
-            <!-- TAB ADMIN 3: CITAS -->
-            <div id="admin-view-appointments" class="hidden flex flex-col gap-6 fade-in">
-                <div class="card">
-                    <div class="flex justify-between items-center" style="margin-bottom: 1.25rem;">
-                        <h3 style="font-weight: 700; font-size: 1rem;">Todas las Citas Agendadas</h3>
-                        <span id="total-appointments-badge" class="badge">0 citas</span>
-                    </div>
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Fecha y Hora</th>
-                                    <th>Cliente</th>
-                                    <th>Servicio</th>
-                                    <th>Precio</th>
-                                    <th>Estado</th>
-                                    <th style="text-align: right;">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-appointments-table-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB ADMIN 4: CLIENTES -->
-            <div id="admin-view-clients" class="hidden flex flex-col gap-6 fade-in">
-                <div class="card">
-                    <div class="flex justify-between items-center" style="margin-bottom: 1.25rem;">
-                        <h3 style="font-weight: 700; font-size: 1rem;">Directorio de Clientes</h3>
-                    </div>
-                    <div class="grid grid-cols-1 md-grid-3 gap-4" id="admin-clients-grid"></div>
-                </div>
-            </div>
-
-            <!-- TAB ADMIN 5: EDITAR SERVICIOS -->
-            <div id="admin-view-services" class="hidden flex flex-col gap-6 fade-in">
-                <div class="card">
-                    <div class="flex justify-between items-center" style="margin-bottom: 1.25rem;">
-                        <h3 style="font-weight: 700; font-size: 1rem;">Gestión de Servicios y Fotos</h3>
-                        <button onclick="openNewServiceModal()" class="btn btn-primary" style="padding: 0.55rem 0.85rem; font-size: 0.8rem;">+ Agregar Servicio</button>
-                    </div>
-                    <div class="grid grid-cols-1 md-grid-2 gap-6" id="admin-services-grid"></div>
-                </div>
-            </div>
-
-            <!-- TAB ADMIN 6: HORARIOS DE ATENCIÓN -->
-            <div id="admin-view-hours" class="hidden flex flex-col gap-6 fade-in">
-                <div class="card">
-                    <div class="flex justify-between items-center" style="margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
-                        <div>
-                            <h3 style="font-weight: 700; font-size: 1rem;">Horarios de Atención Semanal</h3>
-                            <p style="font-size: 0.78rem; color: var(--text-muted);">Configura los días abiertos y horas de atención. Las reservas respetarán esta disponibilidad.</p>
-                        </div>
-                        <button onclick="saveAdminHours()" class="btn btn-primary" style="padding: 0.55rem 0.85rem; font-size: 0.8rem;">💾 Guardar Cambios</button>
-                    </div>
-                    <div id="admin-hours-container" class="flex flex-col gap-3"></div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- MODAL DE AUTENTICACIÓN / REGISTRO -->
-    <div id="auth-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <button onclick="closeAuthModal()" class="close-btn">&times;</button>
-            <div class="flex gap-2" style="margin-bottom: 1.25rem;">
-                <button id="tab-btn-client" onclick="switchAuthTab('client')" class="role-tab-btn active">Soy Cliente</button>
-                <button id="tab-btn-admin" onclick="switchAuthTab('admin')" class="role-tab-btn">Administrador</button>
-            </div>
-            <div id="auth-modal-content"></div>
-        </div>
-    </div>
-
-    <!-- MODAL AGENDAR CITA -->
-    <div id="appointment-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <button onclick="closeModal('appointment-modal')" class="close-btn">&times;</button>
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem;">Agendar Cita</h3>
-            <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem;">Al confirmar, se abrirá WhatsApp para enviar los detalles de la cita al negocio.</p>
-            <form onsubmit="handleSaveAppointment(event)" class="flex flex-col gap-3">
-                <div>
-                    <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Servicio Elegido</label>
-                    <select id="appt-service" required class="input-field"></select>
-                </div>
-                <div>
-                    <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Tu Nombre Completo</label>
-                    <input type="text" id="appt-client-name" required placeholder="Ingresa tu nombre" class="input-field">
-                </div>
-                <div>
-                    <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Teléfono / WhatsApp</label>
-                    <input type="tel" id="appt-client-phone" required placeholder="Ej. 3102663856" class="input-field">
-                </div>
-                <div class="grid grid-cols-1 md-grid-2 gap-3">
-                    <div>
-                        <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Fecha</label>
-                        <input type="date" id="appt-date" required class="input-field">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Hora</label>
-                        <input type="time" id="appt-time" required class="input-field">
-                    </div>
-                </div>
-                <div class="flex gap-3" style="margin-top: 0.75rem;">
-                    <button type="button" onclick="closeModal('appointment-modal')" class="btn btn-secondary" style="width: 50%;">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" style="width: 50%;">Confirmar Cita</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL AGREGAR SERVICIO CON FOTO -->
-    <div id="service-modal" class="modal-overlay hidden">
-        <div class="modal-box">
-            <button onclick="closeModal('service-modal')" class="close-btn">&times;</button>
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1.25rem;">Configurar Nuevo Servicio</h3>
-            <form onsubmit="handleSaveService(event)" class="flex flex-col gap-3">
-                <div>
-                    <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Nombre del Servicio</label>
-                    <input type="text" id="service-name" required placeholder="Ej. Manicure Semipermanente" class="input-field">
-                </div>
-                <div>
-                    <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">URL de la Foto</label>
-                    <input type="url" id="service-image" placeholder="https://i.postimg.cc/..." class="input-field">
-                </div>
-                <div class="grid grid-cols-1 md-grid-2 gap-3">
-                    <div>
-                        <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Precio ($COP)</label>
-                        <input type="number" id="service-price" required placeholder="45000" class="input-field">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Duración (min)</label>
-                        <input type="number" id="service-duration" required placeholder="60" class="input-field">
-                    </div>
-                </div>
-                <div class="flex gap-3" style="margin-top: 0.75rem;">
-                    <button type="button" onclick="closeModal('service-modal')" class="btn btn-secondary" style="width: 50%;">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" style="width: 50%;">Guardar Servicio</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- LÓGICA JAVASCRIPT -->
-    <script>
-        let currentUser = null;
-        const todayStr = new Date().toISOString().split('T')[0];
-        const BUSINESS_WHATSAPP = "573102663856";
-
-        function safeGetStorage(key) {
-            try { return localStorage.getItem(key); } catch (e) { return null; }
-        }
-
-        function safeSetStorage(key, value) {
-            try { localStorage.setItem(key, value); } catch (e) {}
-        }
-
-        // HORARIOS PREDETERMINADOS
-        const initialHours = {
-            1: { day: "Lunes", enabled: true, open: "08:00", close: "19:00" },
-            2: { day: "Martes", enabled: true, open: "08:00", close: "19:00" },
-            3: { day: "Miércoles", enabled: true, open: "08:00", close: "19:00" },
-            4: { day: "Jueves", enabled: true, open: "08:00", close: "19:00" },
-            5: { day: "Viernes", enabled: true, open: "08:00", close: "19:00" },
-            6: { day: "Sábado", enabled: true, open: "08:00", close: "19:00" },
-            0: { day: "Domingo", enabled: false, open: "09:00", close: "14:00" }
-        };
-
-        // SERVICIOS CON LOS ENLACES DE POSTIMG
-        const initialServices = [
-            { 
-                id: 1, 
-                name: "Lifting de Pestañas", 
-                price: 65000, 
-                duration: 60, 
-                image: "https://i.postimg.cc/4Y6wk6HS/Gemini-Generated-Image-8cgy3z8cgy3z8cgy.jpg" 
-            },
-            { 
-                id: 2, 
-                name: "Manicure Semipermanente", 
-                price: 45000, 
-                duration: 45, 
-                image: "https://i.postimg.cc/rdqj8D5G/Gemini-Generated-Image-gwfd69gwfd69gwfd.jpg" 
-            },
-            { 
-                id: 3, 
-                name: "Limpieza Facial Profunda", 
-                price: 80000, 
-                duration: 60, 
-                image: "https://i.postimg.cc/BjTN9TP7/Gemini-Generated-Image-cky1vzcky1vzcky1.jpg" 
-            },
-            { 
-                id: 4, 
-                name: "Corte y Cepillado", 
-                price: 50000, 
-                duration: 45, 
-                image: "https://i.postimg.cc/FYyG5ykn/Gemini-Generated-Image-79fva679fva679fv.jpg" 
-            }
-        ];
-
-        const initialClients = [
-            { name: "Camila Gómez", phone: "3102663856" },
-            { name: "Valentina Ruiz", phone: "3001234567" }
-        ];
-
-        const initialAppointments = [
-            { id: 1, clientName: "Camila Gómez", clientPhone: "3102663856", serviceId: 1, date: todayStr, time: "10:00", status: "pendiente" },
-            { id: 2, clientName: "Valentina Ruiz", clientPhone: "3001234567", serviceId: 2, date: todayStr, time: "12:30", status: "pendiente" }
-        ];
-
-        window.onload = function() {
-            safeSetStorage('nuvia_services', JSON.stringify(initialServices));
-
-            if(!safeGetStorage('nuvia_clients')) {
-                safeSetStorage('nuvia_clients', JSON.stringify(initialClients));
-            }
-            if(!safeGetStorage('nuvia_appointments')) {
-                safeSetStorage('nuvia_appointments', JSON.stringify(initialAppointments));
-            }
-
-            if(!safeGetStorage('nuvia_hours')) {
-                safeSetStorage('nuvia_hours', JSON.stringify(initialHours));
-            }
-
-            const savedUser = safeGetStorage('nuvia_session_user');
-            if(savedUser) {
-                currentUser = JSON.parse(savedUser);
-                enterUserDashboard();
-            } else {
-                renderPublicCatalog();
-            }
-            updateDateHeader();
-        };
-
-        function updateDateHeader() {
-            const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const str = new Date().toLocaleDateString('es-ES', opts);
-            const el = document.getElementById('current-date-display');
-            if(el) el.textContent = str.charAt(0).toUpperCase() + str.slice(1);
-        }
-
-        function renderPublicCatalog() {
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const container = document.getElementById('public-services-catalog');
-            if(!container) return;
-
-            container.innerHTML = services.map(s => `
-                <div class="card service-card">
-                    <div class="service-img-wrapper">
-                        <img src="${s.image}" alt="${s.name}" class="service-img" loading="lazy">
-                        <span class="service-badge-duration">⏱️ ${s.duration} min</span>
-                    </div>
-                    <div class="service-card-body">
-                        <div>
-                            <h3 style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.2rem;">${s.name}</h3>
-                        </div>
-                        <div class="flex justify-between items-center" style="margin-top: 0.5rem;">
-                            <span style="font-weight: 800; color: var(--primary); font-size: 1.15rem;">$${Number(s.price).toLocaleString('es-CO')}</span>
-                            <button onclick="triggerBookService(${s.id})" class="btn btn-primary" style="padding: 0.45rem 0.9rem; font-size: 0.8rem;">Agendar</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function triggerBookService(serviceId) {
-            if(!currentUser) {
-                showAuthModal('client');
-            } else {
-                openNewAppointmentModal(serviceId);
-            }
-        }
-
-        function showAuthModal(defaultRole) {
-            document.getElementById('auth-modal').classList.remove('hidden');
-            switchAuthTab(defaultRole);
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-        }
-
-        function switchAuthTab(role) {
-            const btnClient = document.getElementById('tab-btn-client');
-            const btnAdmin = document.getElementById('tab-btn-admin');
-            const box = document.getElementById('auth-modal-content');
-
-            if(role === 'client') {
-                btnClient.className = "role-tab-btn active";
-                btnAdmin.className = "role-tab-btn";
-                box.innerHTML = `
-                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">Ingreso / Registro de Cliente</h3>
-                    <p style="font-size: 0.8rem; color: #777; margin-bottom: 1rem;">Ingresa tu nombre y contraseña para agendar.</p>
-                    <form onsubmit="handleClientAuth(event)" class="flex flex-col gap-3">
-                        <div>
-                            <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Tu Nombre Completo</label>
-                            <input type="text" id="client-login-name" required placeholder="Ej. Camila Gómez" class="input-field">
-                        </div>
-                        <div>
-                            <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Contraseña</label>
-                            <input type="password" id="client-login-pass" required placeholder="Crea o ingresa tu clave" class="input-field">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Entrar a Agendar</button>
-                    </form>
-                `;
-            } else {
-                btnAdmin.className = "role-tab-btn active";
-                btnClient.className = "role-tab-btn";
-                box.innerHTML = `
-                    <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;">Acceso Administrador</h3>
-                    <p style="font-size: 0.8rem; color: #777; margin-bottom: 1rem;">Ingresa las credenciales de administración.</p>
-                    <form onsubmit="handleAdminAuth(event)" class="flex flex-col gap-3">
-                        <div>
-                            <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Usuario Administrador</label>
-                            <input type="text" id="admin-login-user" required placeholder="Usuario de administración" class="input-field">
-                        </div>
-                        <div>
-                            <label style="font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 0.3rem;">Contraseña</label>
-                            <input type="password" id="admin-login-pass" required placeholder="••••••••" class="input-field">
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Iniciar Sesión Admin</button>
-                    </form>
-                `;
-            }
-        }
-
-        function handleClientAuth(e) {
-            e.preventDefault();
-            const name = document.getElementById('client-login-name').value.trim();
-            const pass = document.getElementById('client-login-pass').value.trim();
-            if(!name || !pass) return;
-
-            currentUser = { name: name, role: 'client' };
-            safeSetStorage('nuvia_session_user', JSON.stringify(currentUser));
-
-            const clients = JSON.parse(safeGetStorage('nuvia_clients')) || [];
-            if(!clients.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-                clients.push({ name: name, phone: "Pendiente por cita" });
-                safeSetStorage('nuvia_clients', JSON.stringify(clients));
-            }
-
-            closeAuthModal();
-            enterUserDashboard();
-        }
-
-        function handleAdminAuth(e) {
-            e.preventDefault();
-            const user = document.getElementById('admin-login-user').value.trim();
-            const pass = document.getElementById('admin-login-pass').value.trim();
-
-            if(user === "Nuvia" && pass === "Nuvia123") {
-                currentUser = { name: "Nuvia Admin", role: "admin" };
-                safeSetStorage('nuvia_session_user', JSON.stringify(currentUser));
-                closeAuthModal();
-                enterUserDashboard();
-            } else {
-                alert("Credenciales de administrador incorrectas.");
-            }
-        }
-
-        function enterUserDashboard() {
-            document.getElementById('public-header').classList.add('hidden');
-            document.getElementById('public-view').classList.add('hidden');
-
-            if(currentUser.role === 'admin') {
-                document.getElementById('admin-dashboard').classList.remove('hidden');
-                switchAdminTab('dashboard');
-            } else {
-                document.getElementById('client-dashboard').classList.remove('hidden');
-                document.getElementById('client-greeting-name').textContent = currentUser.name;
-                switchClientTab('catalog');
-            }
-        }
-
-        function logout() {
-            try { localStorage.removeItem('nuvia_session_user'); } catch(e){}
-            location.reload();
-        }
-
-        // NAVEGACIÓN CLIENTE
-        function switchClientTab(tabId) {
-            const tabs = ['catalog', 'appointments'];
-            tabs.forEach(t => {
-                const view = document.getElementById(`client-view-${t}`);
-                const navBtn = document.getElementById(`client-nav-${t}`);
-                if(t === tabId) {
-                    if(view) view.classList.remove('hidden');
-                    if(navBtn) navBtn.className = "active";
-                } else {
-                    if(view) view.classList.add('hidden');
-                    if(navBtn) navBtn.className = "";
-                }
-            });
-
-            if(tabId === 'catalog') renderClientServices();
-            if(tabId === 'appointments') renderClientAppointments();
-        }
-
-        function renderClientServices() {
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const grid = document.getElementById('client-services-grid');
-            if(!grid) return;
-
-            grid.innerHTML = services.map(s => `
-                <div class="card service-card">
-                    <div class="service-img-wrapper">
-                        <img src="${s.image}" alt="${s.name}" class="service-img" loading="lazy">
-                        <span class="service-badge-duration">⏱️ ${s.duration} min</span>
-                    </div>
-                    <div class="service-card-body">
-                        <div>
-                            <h4 style="font-weight: 700; font-size: 1rem;">${s.name}</h4>
-                        </div>
-                        <div class="flex justify-between items-center" style="margin-top: 0.5rem;">
-                            <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">$${Number(s.price).toLocaleString('es-CO')}</span>
-                            <button onclick="openNewAppointmentModal(${s.id})" class="btn btn-primary" style="padding: 0.45rem 0.9rem; font-size: 0.8rem;">Agendar</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderClientAppointments() {
-            const appts = JSON.parse(safeGetStorage('nuvia_appointments')) || [];
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const tbody = document.getElementById('client-appointments-table-body');
-
-            const myAppts = appts.filter(a => a.clientName.toLowerCase() === currentUser.name.toLowerCase());
-
-            if(myAppts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #888; padding: 1.5rem;">No tienes citas agendadas aún.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = myAppts.map(a => {
-                const s = services.find(srv => srv.id == a.serviceId);
-                const isDone = a.status === 'realizado';
-                return `
-                    <tr>
-                        <td style="font-weight: 600;">${a.date} • <span style="color: var(--primary);">${a.time}</span></td>
-                        <td>${s ? s.name : 'Servicio'}</td>
-                        <td style="font-weight: 700;">$${s ? Number(s.price).toLocaleString('es-CO') : '0'}</td>
-                        <td>
-                            ${isDone ? '<span class="badge-success">Realizado</span>' : '<span class="badge">Pendiente</span>'}
-                        </td>
-                        <td style="text-align: right;">
-                            <button onclick='sendWhatsAppToBusiness(${JSON.stringify(a)})' class="btn-whatsapp">📲 Confirmar WA</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // NAVEGACIÓN ADMIN
-        function switchAdminTab(tabId) {
-            const tabs = ['dashboard', 'calendar', 'appointments', 'clients', 'services', 'hours'];
-            tabs.forEach(t => {
-                const view = document.getElementById(`admin-view-${t}`);
-                const navBtn = document.getElementById(`admin-nav-${t}`);
-                if(t === tabId) {
-                    if(view) view.classList.remove('hidden');
-                    if(navBtn) navBtn.className = "active";
-                } else {
-                    if(view) view.classList.add('hidden');
-                    if(navBtn) navBtn.className = "";
-                }
-            });
-
-            if(tabId === 'dashboard') renderAdminDashboard();
-            if(tabId === 'calendar') {
-                document.getElementById('calendar-date-filter').value = todayStr;
-                renderAdminCalendarView();
-            }
-            if(tabId === 'appointments') renderAdminAppointments();
-            if(tabId === 'clients') renderAdminClients();
-            if(tabId === 'services') renderAdminServices();
-            if(tabId === 'hours') renderAdminHours();
-        }
-
-        function markAppointmentCompleted(id) {
-            let appts = JSON.parse(safeGetStorage('nuvia_appointments')) || [];
-            const idx = appts.findIndex(a => a.id === id);
-            if(idx !== -1) {
-                appts[idx].status = 'realizado';
-                safeSetStorage('nuvia_appointments', JSON.stringify(appts));
-                renderAdminDashboard();
-                renderAdminCalendarView();
-                renderAdminAppointments();
-            }
-        }
-
-        function renderAdminDashboard() {
-            const appts = JSON.parse(safeGetStorage('nuvia_appointments')) || [];
-            const clients = JSON.parse(safeGetStorage('nuvia_clients')) || [];
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-
-            const todayAppts = appts.filter(a => a.date === todayStr);
-            let income = 0;
-            todayAppts.forEach(a => {
-                const s = services.find(srv => srv.id == a.serviceId);
-                if(s) income += Number(s.price);
-            });
-
-            document.getElementById('stat-today-count').textContent = todayAppts.length;
-            document.getElementById('stat-today-income').textContent = `$${income.toLocaleString('es-CO')}`;
-            document.getElementById('stat-clients-count').textContent = clients.length;
-
-            const list = document.getElementById('admin-dashboard-appointments-list');
-            if(todayAppts.length === 0) {
-                list.innerHTML = `<p style="color: #888; text-align: center; padding: 1rem;">No hay citas agendadas para hoy.</p>`;
-                return;
-            }
-
-            list.innerHTML = todayAppts.map(a => {
-                const s = services.find(srv => srv.id == a.serviceId) || { name: 'Servicio', price: 0 };
-                const isDone = a.status === 'realizado';
-                return `
-                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 0.85rem; border-radius: 12px;" class="flex justify-between items-center flex-wrap gap-2">
-                        <div>
-                            <span style="background: var(--primary); color: white; padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700;">${a.time}</span>
-                            <h5 style="font-size: 0.85rem; font-weight: 700; margin-top: 0.2rem;">${s.name}</h5>
-                            <p style="font-size: 0.75rem; color: #777;">${a.clientName} • ${a.clientPhone}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span style="font-weight: 700; color: var(--primary); font-size: 0.85rem;">$${Number(s.price).toLocaleString('es-CO')}</span>
-                            ${isDone 
-                                ? '<span class="badge-success">Realizado</span>' 
-                                : `<button onclick="markAppointmentCompleted(${a.id})" class="btn-complete">✅ Finalizar</button>`
-                            }
-                            <button onclick='sendWhatsAppToClient(${JSON.stringify(a)})' class="btn-whatsapp">📲 Cliente</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderAdminCalendarView() {
-            const date = document.getElementById('calendar-date-filter').value || todayStr;
-            const appts = (JSON.parse(safeGetStorage('nuvia_appointments')) || []).filter(a => a.date === date);
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const container = document.getElementById('calendar-day-schedule');
-
-            if(appts.length === 0) {
-                container.innerHTML = `<p style="color: #888; text-align: center; padding: 1.5rem;">No hay citas para la fecha ${date}.</p>`;
-                return;
-            }
-
-            appts.sort((a,b) => a.time.localeCompare(b.time));
-
-            container.innerHTML = appts.map(a => {
-                const s = services.find(srv => srv.id == a.serviceId) || { name: 'Servicio', price: 0, duration: 30 };
-                const isDone = a.status === 'realizado';
-                return `
-                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 0.85rem; border-radius: 12px;" class="flex justify-between items-center flex-wrap gap-2">
-                        <div>
-                            <span style="background: var(--text-main); color: white; padding: 0.2rem 0.4rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700;">${a.time}</span>
-                            <h5 style="font-size: 0.85rem; font-weight: 700; margin-top: 0.2rem;">${s.name} <span style="font-size:0.7rem; color:#888;">(${s.duration} min)</span></h5>
-                            <p style="font-size: 0.75rem; color: #777;">${a.clientName} • ${a.clientPhone}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span style="font-weight: 700; color: var(--text-main); font-size: 0.85rem;">$${Number(s.price).toLocaleString('es-CO')}</span>
-                            ${isDone 
-                                ? '<span class="badge-success">Realizado</span>' 
-                                : `<button onclick="markAppointmentCompleted(${a.id})" class="btn-complete">✅ Finalizar</button>`
-                            }
-                            <button onclick='sendWhatsAppToClient(${JSON.stringify(a)})' class="btn-whatsapp">📲 WA Cliente</button>
-                            <button onclick="deleteAppointment(${a.id})" style="background:none; border:none; color: var(--danger); cursor:pointer;">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderAdminAppointments() {
-            const appts = JSON.parse(safeGetStorage('nuvia_appointments')) || [];
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const tbody = document.getElementById('admin-appointments-table-body');
-            document.getElementById('total-appointments-badge').textContent = `${appts.length} citas`;
-
-            if(appts.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #888; padding: 1.5rem;">No hay citas registradas.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = appts.map(a => {
-                const s = services.find(srv => srv.id == a.serviceId) || { name: 'Servicio', price: 0 };
-                const isDone = a.status === 'realizado';
-                return `
-                    <tr>
-                        <td style="font-weight: 600;">${a.date} • <span style="color: var(--primary);">${a.time}</span></td>
-                        <td>${a.clientName} <br><span style="font-size: 0.75rem; color: #888;">${a.clientPhone}</span></td>
-                        <td>${s.name}</td>
-                        <td style="font-weight: 700;">$${Number(s.price).toLocaleString('es-CO')}</td>
-                        <td>
-                            ${isDone ? '<span class="badge-success">Realizado</span>' : '<span class="badge">Pendiente</span>'}
-                        </td>
-                        <td style="text-align: right;">
-                            ${!isDone ? `<button onclick="markAppointmentCompleted(${a.id})" class="btn-complete" style="margin-right:0.3rem;">✅ Finalizar</button>` : ''}
-                            <button onclick='sendWhatsAppToClient(${JSON.stringify(a)})' class="btn-whatsapp" style="margin-right:0.3rem;">📲 WA Cliente</button>
-                            <button onclick="deleteAppointment(${a.id})" style="background:none; border:none; color: var(--danger); cursor:pointer;">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function renderAdminClients() {
-            const clients = JSON.parse(safeGetStorage('nuvia_clients')) || [];
-            const grid = document.getElementById('admin-clients-grid');
-
-            if(clients.length === 0) {
-                grid.innerHTML = `<p style="color: #888; text-align: center; grid-column: span 3; padding: 1.5rem;">No hay clientes registrados.</p>`;
-                return;
-            }
-
-            grid.innerHTML = clients.map(c => `
-                <div class="card flex justify-between items-center">
-                    <div>
-                        <h4 style="font-weight: 700; font-size: 0.9rem;">${c.name}</h4>
-                        <p style="font-size: 0.78rem; color: #777; margin-top: 0.2rem;">📞 ${c.phone}</p>
-                    </div>
-                    <button onclick="deleteClient('${c.name}')" style="background:none; border:none; color: var(--danger); cursor:pointer; font-size: 0.8rem; font-weight: 600;">Eliminar 🗑️</button>
-                </div>
-            `).join('');
-        }
-
-        function deleteClient(clientName) {
-            if(!confirm(`¿Estás seguro de eliminar a "${clientName}" del directorio?`)) return;
-            let clients = JSON.parse(safeGetStorage('nuvia_clients')) || [];
-            clients = clients.filter(c => c.name.toLowerCase() !== clientName.toLowerCase());
-            safeSetStorage('nuvia_clients', JSON.stringify(clients));
-            renderAdminClients();
-        }
-
-        function renderAdminServices() {
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const grid = document.getElementById('admin-services-grid');
-
-            if(services.length === 0) {
-                grid.innerHTML = `<p style="color: #888; text-align: center; grid-column: span 2; padding: 1.5rem;">No hay servicios configurados.</p>`;
-                return;
-            }
-
-            grid.innerHTML = services.map(s => `
-                <div class="card service-card">
-                    <div class="service-img-wrapper">
-                        <img src="${s.image}" alt="${s.name}" class="service-img" loading="lazy">
-                        <span class="service-badge-duration">⏱️ ${s.duration} min</span>
-                    </div>
-                    <div class="service-card-body">
-                        <div>
-                            <h4 style="font-weight: 700; font-size: 0.95rem;">${s.name}</h4>
-                        </div>
-                        <div class="flex justify-between items-center" style="margin-top: 0.5rem;">
-                            <span style="font-weight: 800; color: var(--primary); font-size: 1.05rem;">$${Number(s.price).toLocaleString('es-CO')}</span>
-                            <button onclick="deleteService(${s.id})" style="background:none; border:none; color: var(--danger); cursor:pointer; font-size: 0.8rem; font-weight:600;">Eliminar 🗑️</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderAdminHours() {
-            const hours = JSON.parse(safeGetStorage('nuvia_hours')) || initialHours;
-            const container = document.getElementById('admin-hours-container');
-            const orderKeys = [1, 2, 3, 4, 5, 6, 0];
-
-            container.innerHTML = orderKeys.map(key => {
-                const item = hours[key];
-                return `
-                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 0.85rem 1rem; border-radius: 12px;" class="flex justify-between items-center flex-wrap gap-3">
-                        <div class="flex items-center gap-3" style="min-width: 140px;">
-                            <input type="checkbox" id="hour-enable-${key}" ${item.enabled ? 'checked' : ''} style="width: 18px; height: 18px; cursor: pointer;">
-                            <label for="hour-enable-${key}" style="font-weight: 700; font-size: 0.9rem; cursor: pointer;">${item.day}</label>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span style="font-size: 0.78rem; color: var(--text-muted);">Apertura:</span>
-                            <input type="time" id="hour-open-${key}" value="${item.open}" class="input-field" style="padding: 0.35rem 0.6rem; width: 110px; font-size: 0.85rem;">
-                            <span style="font-size: 0.78rem; color: var(--text-muted); margin-left: 0.5rem;">Cierre:</span>
-                            <input type="time" id="hour-close-${key}" value="${item.close}" class="input-field" style="padding: 0.35rem 0.6rem; width: 110px; font-size: 0.85rem;">
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function saveAdminHours() {
-            const hours = JSON.parse(safeGetStorage('nuvia_hours')) || initialHours;
-            const orderKeys = [1, 2, 3, 4, 5, 6, 0];
-
-            orderKeys.forEach(key => {
-                const enabled = document.getElementById(`hour-enable-${key}`).checked;
-                const openVal = document.getElementById(`hour-open-${key}`).value;
-                const closeVal = document.getElementById(`hour-close-${key}`).value;
-
-                hours[key].enabled = enabled;
-                hours[key].open = openVal;
-                hours[key].close = closeVal;
-            });
-
-            safeSetStorage('nuvia_hours', JSON.stringify(hours));
-            alert('¡Horarios de atención actualizados con éxito!');
-        }
-
-        function openNewAppointmentModal(serviceId) {
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const select = document.getElementById('appt-service');
-
-            select.innerHTML = services.map(s => `<option value="${s.id}">${s.name} - $${s.price}</option>`).join('');
-            if(serviceId) select.value = serviceId;
-
-            document.getElementById('appt-date').value = todayStr;
-            document.getElementById('appt-time').value = "10:00";
-
-            if(currentUser && currentUser.role === 'client') {
-                document.getElementById('appt-client-name').value = currentUser.name;
-            }
-
-            document.getElementById('appointment-modal').classList.remove('hidden');
-        }
-
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function handleSaveAppointment(e) {
-            e.preventDefault();
-            const serviceId = document.getElementById('appt-service').value;
-            const clientName = document.getElementById('appt-client-name').value.trim();
-            const clientPhone = document.getElementById('appt-client-phone').value.trim();
-            const date = document.getElementById('appt-date').value;
-            const time = document.getElementById('appt-time').value;
-
-            const hoursConfig = JSON.parse(safeGetStorage('nuvia_hours')) || initialHours;
-            const apptDateObj = new Date(date + "T00:00:00");
-            const dayOfWeek = apptDateObj.getDay();
-            const dayConfig = hoursConfig[dayOfWeek];
-
-            if(!dayConfig || !dayConfig.enabled) {
-                alert(`Lo sentimos, el negocio no atiende los días ${dayConfig ? dayConfig.day : 'seleccionados'}. Por favor elige otra fecha.`);
-                return;
-            }
-
-            if(time < dayConfig.open || time > dayConfig.close) {
-                alert(`La hora seleccionada (${time}) está fuera de nuestro horario de atención para los días ${dayConfig.day} (${dayConfig.open} a ${dayConfig.close}).`);
-                return;
-            }
-
-            const appts = JSON.parse(safeGetStorage('nuvia_appointments')) || [];
-            const exists = appts.some(a => a.date === date && a.time === time);
-            if(exists) {
-                alert('Ya existe una cita agendada exactamente a esa fecha y hora. Por favor elige otro horario.');
-                return;
-            }
-
-            const newAppt = { id: Date.now(), clientName, clientPhone, serviceId, date, time, status: 'pendiente' };
-            appts.push(newAppt);
-            safeSetStorage('nuvia_appointments', JSON.stringify(appts));
-
-            const clients = JSON.parse(safeGetStorage('nuvia_clients')) || [];
-            const existingIdx = clients.findIndex(c => c.name.toLowerCase() === clientName.toLowerCase());
-            if(existingIdx === -1) {
-                clients.push({ name: clientName, phone: clientPhone });
-            } else {
-                if(clientPhone) clients[existingIdx].phone = clientPhone;
-            }
-            safeSetStorage('nuvia_clients', JSON.stringify(clients));
-
-            closeModal('appointment-modal');
-
-            if(currentUser && currentUser.role === 'client') {
-                switchClientTab('appointments');
-                sendWhatsAppToBusiness(newAppt);
-            } else if(currentUser && currentUser.role === 'admin') {
-                switchAdminTab('dashboard');
-                sendWhatsAppToClient(newAppt);
-            }
-        }
-
-        function sendWhatsAppToBusiness(appt) {
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const service = services.find(s => s.id == appt.serviceId);
-
-            const message = `¡Hola *Nuvia*! ✨\n\nQuiero confirmar/solicitar la siguiente reserva de cita:\n\n` +
-                            `👤 *Cliente:* ${appt.clientName}\n` +
-                            `📞 *Contacto:* ${appt.clientPhone}\n` +
-                            `🗓️ *Fecha:* ${appt.date}\n` +
-                            `⏰ *Hora:* ${appt.time}\n` +
-                            `💅 *Servicio:* ${service ? service.name : 'Servicio'}\n` +
-                            `💵 *Valor:* $${service ? Number(service.price).toLocaleString('es-CO') : '0'}\n\n` +
-                            `¡Quedo atento(a) a la confirmación! 💖`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const waUrl = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodedMessage}`;
-
-            window.open(waUrl, '_blank');
-        }
-
-        function sendWhatsAppToClient(appt) {
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            const service = services.find(s => s.id == appt.serviceId);
-
-            let phoneClean = appt.clientPhone.replace(/\D/g, '');
-            if(phoneClean.length === 10) {
-                phoneClean = '57' + phoneClean;
-            }
-
-            const message = `¡Hola *${appt.clientName}*! ✨\n\nTe contactamos de *Nuvia* respecto a tu cita agendada:\n\n` +
-                            `🗓️ *Fecha:* ${appt.date}\n` +
-                            `⏰ *Hora:* ${appt.time}\n` +
-                            `💅 *Servicio:* ${service ? service.name : 'Servicio'}\n` +
-                            `💵 *Valor:* $${service ? Number(service.price).toLocaleString('es-CO') : '0'}\n\n` +
-                            `¡Quedamos atentos a tu asistencia! 💖`;
-
-            const encodedMessage = encodeURIComponent(message);
-            const waUrl = phoneClean 
-                ? `https://wa.me/${phoneClean}?text=${encodedMessage}` 
-                : `https://api.whatsapp.com/send?text=${encodedMessage}`;
-
-            window.open(waUrl, '_blank');
-        }
-
-        function deleteAppointment(id) {
-            if(!confirm('¿Estás seguro de eliminar esta cita?')) return;
-            let appts = JSON.parse(safeGetStorage('nuvia_appointments')) || [];
-            appts = appts.filter(a => a.id !== id);
-            safeSetStorage('nuvia_appointments', JSON.stringify(appts));
-            renderAdminCalendarView();
-            renderAdminAppointments();
-            renderAdminDashboard();
-        }
-
-        function openNewServiceModal() {
-            document.getElementById('service-name').value = '';
-            document.getElementById('service-image').value = '';
-            document.getElementById('service-price').value = '';
-            document.getElementById('service-duration').value = '';
-            document.getElementById('service-modal').classList.remove('hidden');
-        }
-
-        function handleSaveService(e) {
-            e.preventDefault();
-            const name = document.getElementById('service-name').value.trim();
-            let image = document.getElementById('service-image').value.trim();
-            const price = document.getElementById('service-price').value;
-            const duration = document.getElementById('service-duration').value;
-
-            if(!image) {
-                image = "https://i.postimg.cc/BjTN9TP7/Gemini-Generated-Image-cky1vzcky1vzcky1.jpg";
-            }
-
-            const services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            services.push({ id: Date.now(), name, image, price, duration });
-            safeSetStorage('nuvia_services', JSON.stringify(services));
-
-            closeModal('service-modal');
-            renderAdminServices();
-            renderPublicCatalog();
-        }
-
-        function deleteService(id) {
-            if(!confirm('¿Eliminar servicio?')) return;
-            let services = JSON.parse(safeGetStorage('nuvia_services')) || [];
-            services = services.filter(s => s.id !== id);
-            safeSetStorage('nuvia_services', JSON.stringify(services));
-            renderAdminServices();
-            renderPublicCatalog();
-        }
-    </script>
-</body>
-</html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nuvia · Reserva tu cita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--rose:#f6d5da;--rose2:#e9a9b5;--deep:#a94f65;--beige:#f5ede4;--bg:#fcf9f6;--ink:#3a2e32;--mut:#8b7b80;--line:#ebe0d9;--ok:#4f8a6a;--bad:#b5483f}
+*{box-sizing:border-box;margin:0}body{font:15px/1.45 Figtree,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+h1,h2,h3,.logo{font-family:Fraunces,Georgia,serif;font-weight:600}
+button,input,select,textarea{font:inherit;color:inherit}:focus-visible{outline:2px solid var(--deep);outline-offset:2px}
+.btn{background:var(--deep);color:#fff;border:0;border-radius:10px;padding:9px 16px;cursor:pointer;font-weight:500}
+.btn.g{background:#fff;color:var(--ink);border:1px solid var(--line)}.btn.s{padding:5px 10px;font-size:13px}.btn.d{background:#fff;color:var(--bad);border:1px solid var(--line)}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fff}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}
+.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}.hero{background:linear-gradient(160deg,var(--rose),var(--beige));padding:48px;display:flex;flex-direction:column;justify-content:center;gap:16px}
+.hero h1{font-size:38px;line-height:1.1;max-width:14ch}.hero p{max-width:38ch;color:#6b5a5f}
+.box{max-width:380px;margin:auto;padding:32px 24px;width:100%}.tabs{display:flex;gap:6px;margin:16px 0}.tabs button{flex:1}
+.logo{font-size:26px;color:var(--deep)}.err{color:var(--bad);font-size:13px;margin-top:8px}.lnk{background:none;border:0;color:var(--deep);cursor:pointer;margin-top:14px;font-size:13px;text-decoration:underline}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+nav.side{background:#fff;border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+nav.side .logo{padding:0 10px 16px}nav button{display:flex;gap:10px;align-items:center;border:0;background:none;padding:10px 12px;border-radius:10px;cursor:pointer;text-align:left;color:var(--mut)}
+nav button.on{background:var(--rose);color:var(--deep);font-weight:600}.sp{flex:1}
+main{padding:24px;max-width:1100px;width:100%}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.top h2{font-size:26px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}.stat b{display:block;font:600 26px Fraunces,serif;color:var(--deep)}.stat span{font-size:13px;color:var(--mut)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.svcs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.svcs .card{display:flex;flex-direction:column;gap:6px}.svcs .p{font:600 20px Fraunces,serif;color:var(--deep)}
+.ap{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}.ap:first-of-type{border-top:0}
+.ap .t{min-width:54px;font-weight:600}.ap .i{flex:1;min-width:140px}.ap small{color:var(--mut);display:block}
+.chip{font-size:12px;padding:2px 9px;border-radius:99px;background:var(--beige)}.chip.atendida{background:#dcefe3;color:var(--ok)}.chip.cancelada{background:#f6dcd8;color:var(--bad)}
+.empty{color:var(--mut);padding:18px 0;text-align:center}
+.week{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:8px;overflow-x:auto}.col{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;min-height:140px}
+.col h4{font-size:13px;margin-bottom:6px;cursor:pointer}.col.today{border-color:var(--rose2);background:#fff8f9}
+.mini{font-size:12px;background:var(--rose);border-radius:6px;padding:3px 6px;margin-bottom:4px;cursor:pointer}.mini.cancelada{opacity:.45;text-decoration:line-through}
+.month{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.month .h{text-align:center;font-size:12px;color:var(--mut)}
+.cell{background:#fff;border:1px solid var(--line);border-radius:10px;min-height:68px;padding:6px;cursor:pointer;font-size:13px}.cell.today{border-color:var(--deep)}.cell.out{opacity:.35}.cell i{display:block;font-style:normal;font-size:11px;background:var(--rose);color:var(--deep);border-radius:99px;padding:0 6px;margin-top:4px;width:max-content}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:9px 6px;border-top:1px solid var(--line);font-size:14px}th{color:var(--mut);font-weight:500;border:0}
+.bar{height:8px;background:var(--rose);border-radius:9px;overflow:hidden;min-width:60px}.bar i{display:block;height:100%;background:var(--deep)}
+#modal{position:fixed;inset:0;background:#3a2e3299;display:none;align-items:center;justify-content:center;padding:14px;z-index:9}#modal.on{display:flex}
+.mb{background:#fff;border-radius:16px;padding:22px;width:100%;max-width:440px;max-height:92vh;overflow:auto}.mb h3{margin-bottom:6px;font-size:20px}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;opacity:0;transition:.3s;pointer-events:none;z-index:10}#toast.on{opacity:1}
+@media(max-width:800px){.auth{grid-template-columns:1fr}.hero{padding:28px}.hero h1{font-size:28px}.shell{grid-template-columns:1fr}
+nav.side{position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;flex-direction:row;padding:6px;z-index:5;border-top:1px solid var(--line);border-right:0}
+nav.side .logo,.sp{display:none}nav button{flex:1;flex-direction:column;gap:2px;font-size:11px;padding:6px 2px;align-items:center}main{padding:16px 14px 90px}.two{grid-template-columns:1fr}}
+.svcs img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px}.th{width:48px;height:36px;object-fit:cover;border-radius:6px}
+body{background:radial-gradient(900px 500px at 100% -10%,#f6d5da66,transparent),radial-gradient(700px 500px at -10% 110%,#f5ede4,transparent),var(--bg);background-attachment:fixed}
+.btn{transition:transform .15s,box-shadow .2s,background .2s}.btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px #a94f6533}.btn:active{transform:none}.btn.g:hover{background:var(--beige);box-shadow:none}
+.card{box-shadow:0 1px 2px #a94f6510}
+.banner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:26px 28px;border-radius:20px;margin-bottom:22px;background:linear-gradient(120deg,var(--rose),#f9e6e0 60%,var(--beige));position:relative;overflow:hidden}
+.banner:after{content:"";position:absolute;right:-40px;top:-60px;width:200px;height:200px;border-radius:50%;background:#ffffff66}.banner>*{position:relative;z-index:1}
+.banner h2{font-size:28px}.banner p{color:#6b5a5f;max-width:46ch}.btn.w{background:#fff;color:var(--deep)}.sec{margin:6px 0 14px;font-size:20px}
+.svcs{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.svcs .sc{padding:0;overflow:hidden;gap:0;transition:transform .25s,box-shadow .25s;animation:up .5s both;animation-delay:calc(var(--i)*70ms)}
+.sc:hover{transform:translateY(-5px);box-shadow:0 14px 30px #a94f6522}
+.sc .im{position:relative;overflow:hidden;aspect-ratio:4/3}.sc .im img{width:100%;height:100%;border-radius:0;transition:transform .5s}.sc:hover .im img{transform:scale(1.06)}
+.sc .tag{position:absolute;left:10px;top:10px;background:#fffc;backdrop-filter:blur(4px);padding:3px 10px;border-radius:99px;font-size:12px}
+.sc .bd{display:flex;flex-direction:column;flex:1;padding:16px;gap:6px}.sc h3{font-size:18px}
+.sc .ds{color:var(--mut);font-size:13.5px;min-height:2.8em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sc .ft{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px}.sc .p{font:600 21px Fraunces,serif;color:var(--deep)}
+@keyframes up{from{opacity:0;transform:translateY(14px)}}.mb{animation:pop .25s}@keyframes pop{from{opacity:0;transform:scale(.96) translateY(8px)}}
+nav button{transition:background .2s,color .2s}nav button:hover{background:var(--beige);color:var(--deep)}
+.stat{position:relative;overflow:hidden;transition:transform .2s}.stat:hover{transform:translateY(-3px)}.stat:before{content:"";position:absolute;right:-18px;top:-18px;width:64px;height:64px;border-radius:50%;background:var(--rose);opacity:.6}
+.ap{transition:background .2s;border-radius:10px;padding-left:6px;padding-right:6px}.ap:hover{background:#fdf5f3}
+.cell{transition:transform .15s,border-color .2s}.cell:hover{transform:translateY(-2px);border-color:var(--rose2)}
+.hero{position:relative;overflow:hidden}.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:#ffffff59}.hero:before{width:280px;height:280px;right:-80px;top:-60px}.hero:after{width:180px;height:180px;left:-50px;bottom:-40px}.hero>*{position:relative;z-index:1}
+.chips{display:flex;flex-direction:column;gap:8px}.chips span{background:#ffffffb3;padding:8px 14px;border-radius:99px;width:max-content;max-width:100%;font-size:14px}
+@media(max-width:800px){.banner{padding:20px}.banner h2{font-size:22px}.banner .btn{width:100%}}
+@media(prefers-reduced-motion:reduce){.sc,.mb{animation:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div id="app"></div><div id="modal"></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const L=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},S=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const uid=()=>Math.random().toString(36).slice(2,10),cop=n=>'$'+Math.round(n||0).toLocaleString('es-CO');
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),P=s=>{const[a,b,c]=s.split('-');return new Date(a,b-1,c)};
+const mins=t=>{const[a,b]=t.split(':');return a*60+ +b},hm=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const DN=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'],MN=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const long=s=>{const d=P(s);return DN[d.getDay()]+' '+d.getDate()+' de '+MN[d.getMonth()]},addD=(s,n)=>{const d=P(s);d.setDate(d.getDate()+n);return iso(d)},mon=s=>addD(s,-((P(s).getDay()+6)%7));
+async function hash(p,salt){if(!crypto.subtle)return btoa(salt+p);return[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(salt+p)))].map(b=>b.toString(16).padStart(2,'0')).join('')}
+let D=L('nv3',{admin:null,users:[],services:[],appts:[],hours:{s:8,e:19,days:[1,2,3,4,5,6]}}),sess=L('nv3_s',null),tab='login',err='';
+let ui={v:'dash',mode:'day',cur:iso(new Date()),q:'',rm:iso(new Date()).slice(0,7)},_ap=null;
+const sv=()=>S('nv3',D),today=()=>iso(new Date()),isA=()=>sess&&sess.role==='admin',me=()=>isA()?D.admin:D.users.find(u=>u.id===sess.id),Sv=id=>D.services.find(s=>s.id===id);
+const toast=m=>{const t=$('#toast');t.textContent=m;t.className='on';setTimeout(()=>t.className='',2200)};
+const modal=h=>{$('#modal').innerHTML='<div class="mb">'+h+'</div>';$('#modal').className='on'},closeM=()=>$('#modal').className='';
+$('#modal').onclick=e=>{if(e.target.id==='modal')closeM()};
+
+/* ---------- Acceso ---------- */
+function authView(){const ad=tab==='admin',setup=ad&&!D.admin,reg=tab==='reg';
+return`<div class="auth"><section class="hero"><div class="logo">Nuvia</div><h1>Reserva tu cita en minutos.</h1><p>Elige tu servicio, escoge un horario disponible y listo. Tus citas quedan guardadas en tu cuenta.</p><div class="chips"><span>✨ Horarios disponibles al instante</span><span>📲 Confirmación por WhatsApp</span><span>🌸 Cuidado de belleza a tu medida</span></div></section>
+<section class="box"><h2>${setup?'Configura tu cuenta de administradora':ad?'Acceso administradora':reg?'Crea tu cuenta':'Ingresa a tu cuenta'}</h2>
+${ad?'':`<div class="tabs"><button class="btn ${reg?'g':''}" onclick="tab='login';err='';render()">Ingresar</button><button class="btn ${reg?'':'g'}" onclick="tab='reg';err='';render()">Registrarme</button></div>`}
+<form onsubmit="return auth(event)">${reg||setup?`<label>Nombre completo</label><input name="name" required>`:''}${reg?`<label>Teléfono / WhatsApp</label><input name="phone" inputmode="tel" required>`:''}
+${ad?'<label>Usuario</label><input name="user" required autocomplete="username">':'<label>Correo</label><input name="email" type="email" required>'}<label>Contraseña</label><input name="pw" type="password" minlength="6" required><div class="err">${esc(err)}</div>
+<button class="btn" style="width:100%;margin-top:14px">${setup?'Crear administradora':reg?'Crear cuenta':'Ingresar'}</button></form>
+<button class="lnk" onclick="tab='${ad?'login':'admin'}';err='';render()">${ad?'← Volver al acceso de clientas':'Acceso administradora'}</button></section></div>`}
+async function auth(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),em=(f.email||'').trim().toLowerCase();
+if(tab==='admin'){if(f.user.trim().toLowerCase()!=='nuvia'||f.pw!=='Nuvia123'){err='Usuario o contraseña incorrectos.';return render(),false}sess={role:'admin'};ui.v='dash'}
+else if(tab==='reg'){if(D.users.some(u=>u.email===em)||D.admin?.email===em){err='Ese correo ya está registrado.';return render(),false}
+const salt=uid(),u={id:uid(),name:f.name.trim(),phone:f.phone.trim(),email:em,salt,pw:await hash(f.pw,salt)};D.users.push(u);sv();sess={role:'client',id:u.id};ui.v='dash'}
+else{const u=D.users.find(x=>x.email===em);if(!u||u.pw!==await hash(f.pw,u.salt)){err='Correo o contraseña incorrectos.';return render(),false}sess={role:'client',id:u.id};ui.v='dash'}
+S('nv3_s',sess);err='';render();return false}
+const logout=()=>{sess=null;localStorage.removeItem('nv3_s');tab='login';render()};
+
+/* ---------- Citas ---------- */
+const act=d=>D.appts.filter(a=>a.date===d).sort((a,b)=>a.time.localeCompare(b.time));
+function slotsFor(d,sid,ex){const s=Sv(sid),h=D.hours;if(!s||!d||!h.days.includes(P(d).getDay()))return[];const o=[],n=new Date(),nm=n.getHours()*60+n.getMinutes();
+for(let m=h.s*60;m+s.dur<=h.e*60;m+=15){if(d<today()||(d===today()&&m<=nm))continue;if(!D.appts.some(a=>a.id!==ex&&a.date===d&&a.st!=='cancelada'&&m<mins(a.time)+a.dur&&m+s.dur>mins(a.time)))o.push(hm(m))}return o}
+function row(a,full){const adm=isA();return`<div class="ap"><div class="t">${a.time}</div><div class="i"><b>${esc(adm?a.cname:a.sname)}</b><small>${adm?esc(a.sname)+' · ':''}${a.dur} min · ${cop(a.price)}${full?' · '+long(a.date):''}${adm&&a.cphone?' · '+esc(a.cphone):''}</small></div><span class="chip ${a.st}">${a.st}</span>
+<div class="row">${adm&&a.st==='pendiente'?`<button class="btn s g" title="Marcar atendida" onclick="setSt('${a.id}','atendida')">✓ Atendida</button>`:''}${adm?`<button class="btn s g" onclick="apptForm('${a.id}')">Editar</button>`:''}${a.st==='pendiente'?`<button class="btn s d" onclick="setSt('${a.id}','cancelada')">Cancelar</button>`:''}</div></div>`}
+function setSt(id,st){if(st==='cancelada'&&!confirm('¿Cancelar esta cita?'))return;D.appts.find(a=>a.id===id).st=st;sv();render();toast('Cita '+st)}
+function apptForm(id,date,sid){if(!D.services.length)return modal(`<h3>Sin servicios</h3><p style="margin:8px 0 14px">${isA()?'Primero agrega tus servicios.':'Aún no hay servicios disponibles.'}</p><button class="btn" onclick="closeM();${isA()?"go('srv')":''}">Entendido</button>`);
+if(isA()&&!D.users.length)return modal(`<h3>Sin clientas</h3><p style="margin:8px 0 14px">Aún no hay clientas registradas. Ellas se registran desde la página principal.</p><button class="btn" onclick="closeM()">Entendido</button>`);
+const a=id?D.appts.find(x=>x.id===id):{date:date||today(),time:'',uid:'',sid:sid||'',note:''};_ap=id?a:null;
+modal(`<h3>${id?'Editar cita':'Reservar cita'}</h3><form id="af" onsubmit="return saveAppt(event,'${id||''}')">${isA()?`<label>Clienta</label><select name="uid" required><option value="">Elegir…</option>${D.users.map(c=>`<option value="${c.id}" ${c.id===a.uid?'selected':''}>${esc(c.name)}</option>`).join('')}</select>`:''}
+<label>Servicio</label><select name="sid" required onchange="slots()"><option value="">Elegir…</option>${D.services.map(s=>`<option value="${s.id}" ${s.id===a.sid?'selected':''}>${esc(s.name)} · ${s.dur} min · ${cop(s.price)}</option>`).join('')}</select>
+<div class="row"><div style="flex:1"><label>Fecha</label><input type="date" name="date" value="${a.date}" min="${today()}" required onchange="slots()"></div><div style="flex:1"><label>Hora</label><select name="time" required></select></div></div>
+<label>Nota (opcional)</label><textarea name="note" rows="2">${esc(a.note)}</textarea><div class="err" id="fe"></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn g" onclick="closeM()">Cerrar</button><button class="btn">Confirmar</button></div></form>`);slots(a.time)}
+function slots(keep){const f=Object.fromEntries(new FormData($('#af'))),sel=$('#af').time;let l=slotsFor(f.date,f.sid,_ap?.id);if(_ap&&f.date===_ap.date&&f.sid===_ap.sid&&!l.includes(_ap.time))l=[...l,_ap.time].sort();
+sel.innerHTML=l.length?l.map(t=>`<option ${t===(keep||sel.value)?'selected':''}>${t}</option>`).join(''):'<option value="">'+(f.sid?'Sin horarios ese día':'Elige un servicio')+'</option>'}
+function saveAppt(e,id){e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),s=Sv(f.sid),fe=$('#fe');
+if(!f.time||(!slotsFor(f.date,f.sid,id).includes(f.time)&&!(_ap&&_ap.date===f.date&&_ap.time===f.time&&_ap.sid===f.sid)))return fe.textContent='Ese horario ya no está disponible. Elige otro.',false;
+const u=isA()?D.users.find(x=>x.id===f.uid):me(),old=id&&D.appts.find(a=>a.id===id),keep=old&&old.sid===f.sid;
+const d={uid:u.id,cname:u.name,cphone:u.phone,sid:s.id,sname:s.name,dur:keep?old.dur:s.dur,price:keep?old.price:s.price,date:f.date,time:f.time,note:f.note};
+if(old)Object.assign(old,d);else D.appts.push({id:uid(),st:'pendiente',...d});sv();closeM();ui.cur=f.date;render();toast(isA()?'Cita guardada':'¡Cita reservada!');
+if(!isA()){const u2='https://wa.me/573102663856?text='+encodeURIComponent(`Hola Nuvia, soy ${d.cname}. Quiero confirmar mi cita:\n• Servicio: ${d.sname}\n• Fecha: ${long(d.date)}\n• Hora: ${d.time}\n• Valor: ${cop(d.price)}\n• Mi teléfono: ${d.cphone}${d.note?'\n• Nota: '+d.note:''}`);if(!window.open(u2,'_blank'))location.href=u2}return false}
+
+/* ---------- Admin: clientas, servicios, horario ---------- */
+function hist(id){const c=D.users.find(u=>u.id===id),l=D.appts.filter(a=>a.uid===id).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),tot=l.filter(a=>a.st==='atendida').reduce((s,a)=>s+a.price,0);
+modal(`<h3>${esc(c.name)}</h3><p style="color:var(--mut)">${esc(c.phone)} · ${esc(c.email)}<br>${l.filter(a=>a.st==='atendida').length} atenciones</p><div style="margin:10px 0">${l.length?l.map(a=>`<div class="ap"><div class="i"><b>${esc(a.sname)}</b><small>${long(a.date)} · ${a.time}</small></div><span class="chip ${a.st}">${a.st}</span></div>`).join(''):'<div class="empty">Aún no tiene citas.</div>'}</div><button class="btn g" onclick="closeM()">Cerrar</button>`)}
+function srvForm(id){const s=id?Sv(id):{name:'',price:'',dur:60,desc:''};modal(`<h3>${id?'Editar':'Nuevo'} servicio</h3><form onsubmit="return saveSrv(event,'${id||''}')"><label>Nombre</label><input name="name" value="${esc(s.name)}" required placeholder="Ej: Manicura semipermanente">
+<label>Descripción (opcional)</label><input name="desc" value="${esc(s.desc||'')}"><div class="row"><div style="flex:1"><label>Precio (COP)</label><input name="price" type="number" min="0" step="500" value="${s.price}" required></div><div style="flex:1"><label>Duración (min)</label><input name="dur" type="number" min="15" step="15" value="${s.dur}" required></div></div>
+<div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn g" onclick="closeM()">Cerrar</button><button class="btn">Guardar</button></div></form>`)}
+function saveSrv(e,id){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));f.price=+f.price;f.dur=+f.dur;if(id)Object.assign(Sv(id),f);else D.services.push({id:uid(),...f});sv();closeM();render();toast('Servicio guardado');return false}
+function delSrv(id){if(confirm('¿Eliminar este servicio? Las citas ya creadas se conservan.')){D.services=D.services.filter(s=>s.id!==id);sv();render()}}
+function setH(k,v){D.hours[k]=+v;if(D.hours.s>=D.hours.e)D.hours.e=D.hours.s+1;sv();render()}
+function setDay(d){const a=D.hours.days;D.hours.days=a.includes(d)?a.filter(x=>x!==d):[...a,d];sv();render()}
+
+/* ---------- Vistas ---------- */
+const go=v=>{ui.v=v;render()};
+function dash(){const t=today(),n=D.appts.filter(a=>a.st!=='cancelada'),ms=t.slice(0,7),inc=D.appts.filter(a=>a.st==='atendida'&&a.date.startsWith(ms)).reduce((s,a)=>s+a.price,0);
+const nx=n.filter(a=>a.date>t&&a.date<=addD(t,7)).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)),td=act(t).filter(a=>a.st!=='cancelada');
+return`<div class="top"><h2>Hola, ${esc(me().name.split(' ')[0])}</h2><button class="btn" onclick="apptForm()">+ Nueva cita</button></div>
+<div class="stats"><div class="card stat"><b>${td.length}</b><span>Citas hoy</span></div><div class="card stat"><b>${nx.length}</b><span>Próximos 7 días</span></div><div class="card stat"><b>${D.users.length}</b><span>Clientas</span></div><div class="card stat"><b>${n.filter(a=>a.st==='pendiente'&&a.date>=t).length}</b><span>Citas pendientes</span></div></div>
+<div class="two"><div class="card"><h3>Hoy · ${long(t)}</h3>${td.length?td.map(a=>row(a)).join(''):'<div class="empty">No tienes citas hoy.</div>'}</div><div class="card"><h3>Próximas reservas</h3>${nx.length?nx.slice(0,8).map(a=>row(a,1)).join(''):'<div class="empty">Sin reservas en los próximos 7 días.</div>'}</div></div>`}
+function cal(){const m=ui.mode,c=ui.cur;let title,body;
+if(m==='day'){title=long(c);const l=act(c);body=`<div class="card">${l.length?l.map(a=>row(a)).join(''):'<div class="empty">Día libre.</div>'}</div>`}
+else if(m==='week'){const w=mon(c);title='Semana del '+long(w);body='<div class="week">'+Array.from({length:7},(_,i)=>{const d=addD(w,i);return`<div class="col ${d===today()?'today':''}"><h4 onclick="ui.cur='${d}';ui.mode='day';render()">${DN[P(d).getDay()]} ${P(d).getDate()}</h4>${act(d).map(a=>`<div class="mini ${a.st}" onclick="apptForm('${a.id}')">${a.time} ${esc(a.cname.split(' ')[0])}</div>`).join('')}</div>`}).join('')+'</div>'}
+else{const d=P(c),y=d.getFullYear(),mo=d.getMonth();title=MN[mo]+' '+y;const off=(new Date(y,mo,1).getDay()+6)%7;
+body='<div class="month">'+['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(x=>`<div class="h">${x}</div>`).join('')+Array.from({length:42},(_,i)=>{const dd=new Date(y,mo,1-off+i),s=iso(dd),n=D.appts.filter(a=>a.date===s&&a.st!=='cancelada').length;return`<div class="cell ${dd.getMonth()!==mo?'out':''} ${s===today()?'today':''}" onclick="ui.cur='${s}';ui.mode='day';render()">${dd.getDate()}${n?`<i>${n} cita${n>1?'s':''}</i>`:''}</div>`}).join('')+'</div>'}
+return`<div class="top"><h2 style="text-transform:capitalize">${title}</h2><button class="btn" onclick="apptForm(0,'${c}')">+ Nueva cita</button></div>
+<div class="row" style="margin-bottom:14px"><button class="btn g s" onclick="mv(-1)">‹</button><button class="btn g s" onclick="ui.cur=today();render()">Hoy</button><button class="btn g s" onclick="mv(1)">›</button><span class="sp"></span>${['day','week','month'].map((k,i)=>`<button class="btn s ${m===k?'':'g'}" onclick="ui.mode='${k}';render()">${['Día','Semana','Mes'][i]}</button>`).join('')}</div>${body}`}
+function mv(n){const d=P(ui.cur);if(ui.mode==='day')d.setDate(d.getDate()+n);else if(ui.mode==='week')d.setDate(d.getDate()+7*n);else d.setMonth(d.getMonth()+n,1);ui.cur=iso(d);render()}
+function cli(){const q=ui.q.toLowerCase(),l=D.users.filter(c=>(c.name+c.phone+c.email).toLowerCase().includes(q)).sort((a,b)=>a.name.localeCompare(b.name));
+return`<div class="top"><h2>Clientas</h2></div><input id="q" placeholder="Buscar por nombre, teléfono o correo" value="${esc(ui.q)}" oninput="ui.q=this.value;render();const i=$('#q');i.focus();i.setSelectionRange(99,99)" style="margin-bottom:12px">
+<div class="card">${l.length?l.map(c=>`<div class="ap"><div class="i"><b>${esc(c.name)}</b><small>${esc(c.phone)}</small></div><div class="row"><a class="btn s g" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${c.phone.replace(/\D/g,'')}">WhatsApp</a><button class="btn s g" onclick="hist('${c.id}')">Historial</button></div></div>`).join(''):'<div class="empty">Aún no hay clientas registradas.</div>'}</div>`}
+function srv(){const h=D.hours,o=(a,b,v)=>Array.from({length:b-a+1},(_,i)=>`<option value="${a+i}" ${a+i===v?'selected':''}>${String(a+i).padStart(2,'0')}:00</option>`).join('');
+return`<div class="top"><h2>Servicios y horario</h2><button class="btn" onclick="srvForm()">+ Nuevo servicio</button></div><div class="card">${D.services.length?`<table><tr><th>Servicio</th><th>Duración</th><th>Precio</th><th></th></tr>${D.services.map(s=>`<tr><td><div class="row"><img class="th" src="${img(s.img)}" alt=""><b>${esc(s.name)}</b></div></td><td>${s.dur} min</td><td>${cop(s.price)}</td><td><div class="row"><button class="btn s g" onclick="srvForm('${s.id}')">Editar</button><button class="btn s d" onclick="delSrv('${s.id}')">Eliminar</button></div></td></tr>`).join('')}</table>`:'<div class="empty">Agrega tu primer servicio con precio y duración.</div>'}</div>
+<div class="card" style="margin-top:14px"><h3>Horario de atención</h3><div class="row" style="margin:10px 0"><div>Abres<select onchange="setH('s',this.value)">${o(5,21,h.s)}</select></div><div>Cierras<select onchange="setH('e',this.value)">${o(6,23,h.e)}</select></div></div><div class="row">${[1,2,3,4,5,6,0].map(d=>`<button class="btn s ${h.days.includes(d)?'':'g'}" onclick="setDay(${d})">${DN[d]}</button>`).join('')}</div></div>`}
+function res(){const l=D.appts.filter(a=>a.date.startsWith(ui.rm)),at=l.filter(a=>a.st==='atendida'),inc=at.reduce((s,a)=>s+a.price,0),by={};at.forEach(a=>{(by[a.sname]=by[a.sname]||{n:0,t:0});by[a.sname].n++;by[a.sname].t+=a.price});
+const mx=Math.max(1,...Object.values(by).map(x=>x.n)),[y,m]=ui.rm.split('-'),sh=n=>{ui.rm=iso(new Date(y,m-1+n,1)).slice(0,7);render()};window.sh=sh;
+return`<div class="top"><h2>Resumen</h2><div class="row"><button class="btn g s" onclick="sh(-1)">‹</button><b style="text-transform:capitalize;min-width:120px;text-align:center">${MN[m-1]} ${y}</b><button class="btn g s" onclick="sh(1)">›</button></div></div>
+<div class="stats"><div class="card stat"><b>${l.length}</b><span>Citas del mes</span></div><div class="card stat"><b>${at.length}</b><span>Atendidas</span></div><div class="card stat"><b>${l.filter(a=>a.st==='pendiente').length}</b><span>Pendientes</span></div><div class="card stat"><b>${l.filter(a=>a.st==='cancelada').length}</b><span>Canceladas</span></div></div>
+<div class="card"><h3>Servicios atendidos</h3>${Object.keys(by).length?`<table>${Object.entries(by).sort((a,b)=>b[1].n-a[1].n).map(([k,v])=>`<tr><td>${esc(k)}</td><td><b>${v.n}</b></td><td style="width:45%"><div class="bar"><i style="width:${v.n/mx*100}%"></i></div></td></tr>`).join('')}</table>`:'<div class="empty">Marca citas como atendidas para ver el resumen.</div>'}</div>`}
+
+/* ---------- Vistas de la clienta ---------- */
+function home(){const mine=D.appts.filter(a=>a.uid===sess.id&&a.st==='pendiente'&&a.date>=today()).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];
+return`<section class="banner"><div><h2>Hola, ${esc(me().name.split(' ')[0])} 🌸</h2><p>Elige tu servicio, reserva tu horario y confirma por WhatsApp.</p></div><button class="btn w" onclick="apptForm()">Reservar ahora</button></section>${mine?`<div class="card" style="margin-bottom:16px;background:var(--rose)"><small>Tu próxima cita</small><h3>${esc(mine.sname)}</h3><p>${long(mine.date)} · ${mine.time}</p></div>`:''}
+<h3 class="sec">Nuestros servicios</h3><div class="svcs">${D.services.length?D.services.map((s,i)=>`<div class="card sc" style="--i:${i}"><div class="im"><img src="${img(s.img)}" alt="${esc(s.name)}"><span class="tag">⏱ ${s.dur} min</span></div><div class="bd"><h3>${esc(s.name)}</h3><p class="ds">${esc(s.desc||'')}</p><div class="ft"><span class="p">${cop(s.price)}</span><button class="btn" onclick="apptForm(0,0,'${s.id}')">Reservar</button></div></div></div>`).join(''):'<div class="empty">Pronto habrá servicios disponibles.</div>'}</div>`}
+function mine(){const l=D.appts.filter(a=>a.uid===sess.id).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time)),up=l.filter(a=>a.st==='pendiente'&&a.date>=today()).reverse(),pa=l.filter(a=>!up.includes(a));
+return`<div class="top"><h2>Mis citas</h2><button class="btn" onclick="apptForm()">+ Reservar</button></div><div class="card"><h3>Próximas</h3>${up.length?up.map(a=>row(a,1)).join(''):'<div class="empty">No tienes citas próximas.</div>'}</div><div class="card" style="margin-top:14px"><h3>Historial</h3>${pa.length?pa.map(a=>row(a,1)).join(''):'<div class="empty">Aún no tienes historial.</div>'}</div>`}
+function render(){const a=$('#app');if(!sess||!me()){sess=null;a.innerHTML=authView();return}
+const nv=isA()?[['dash','🏠','Panel'],['cal','📅','Agenda'],['cli','👥','Clientas'],['srv','✂️','Servicios'],['res','📈','Resumen']]:[['dash','🏠','Inicio'],['mine','📅','Mis citas']],V=isA()?{dash,cal,cli,srv,res}:{dash:home,mine};
+if(!V[ui.v])ui.v='dash';
+a.innerHTML=`<div class="shell"><nav class="side"><div class="logo">Nuvia</div>${nv.map(([k,i,t])=>`<button class="${ui.v===k?'on':''}" onclick="go('${k}')"><span>${i}</span>${t}</button>`).join('')}<div class="sp"></div><button onclick="logout()"><span>🚪</span>Salir</button></nav><main>${V[ui.v]()}</main></div>`}
+const A=b=>'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6d5da"/><stop offset="1" stop-color="#f5ede4"/></linearGradient></defs><rect width="400" height="300" fill="url(#g)"/>'+b+'</svg>');
+const star=(x,y,c)=>`<path d="M${x} ${y}l6 16 16 6-16 6-6 16-6-16-16-6 16-6z" fill="${c||'#e9a9b5'}"/>`;
+const ART={
+lifting:A('<path d="M90 165Q200 85 310 165Q200 235 90 165Z" fill="#fff" stroke="#a94f65" stroke-width="5"/><circle cx="200" cy="162" r="38" fill="#c98a96"/><circle cx="200" cy="162" r="18" fill="#3a2e32"/><circle cx="210" cy="152" r="6" fill="#fff"/><g stroke="#3a2e32" stroke-width="5" stroke-linecap="round" fill="none"><path d="M112 145Q100 120 82 113"/><path d="M142 125Q135 95 118 83"/><path d="M175 113Q172 80 160 63"/><path d="M210 111Q214 77 208 57"/><path d="M245 117Q256 87 256 67"/><path d="M278 133Q296 107 306 93"/><path d="M300 155Q322 140 336 135"/></g>'+star(330,40)+star(50,230)),
+mani:A('<g fill="#f3d9c9"><rect x="205" y="170" width="40" height="110" rx="16"/><rect x="255" y="150" width="40" height="130" rx="16"/><rect x="305" y="170" width="40" height="110" rx="16"/></g><g fill="#e9a9b5" stroke="#a94f65" stroke-width="4"><rect x="205" y="105" width="40" height="80" rx="20"/><rect x="255" y="85" width="40" height="95" rx="20"/><rect x="305" y="105" width="40" height="80" rx="20"/></g><g fill="#fff" opacity=".6"><rect x="213" y="115" width="8" height="30" rx="4"/><rect x="263" y="95" width="8" height="35" rx="4"/><rect x="313" y="115" width="8" height="30" rx="4"/></g><rect x="70" y="150" width="90" height="100" rx="18" fill="#e9a9b5"/><rect x="95" y="105" width="40" height="50" rx="8" fill="#3a2e32"/><rect x="82" y="170" width="66" height="40" rx="8" fill="#fff" opacity=".5"/>'+star(165,50)),
+facial:A('<ellipse cx="200" cy="160" rx="80" ry="100" fill="#f7e3d6" stroke="#a94f65" stroke-width="4"/><rect x="118" y="90" width="164" height="34" rx="17" fill="#fff"/><circle cx="160" cy="185" r="14" fill="#e9a9b5" opacity=".6"/><circle cx="240" cy="185" r="14" fill="#e9a9b5" opacity=".6"/><g stroke="#3a2e32" stroke-width="4" fill="none" stroke-linecap="round"><path d="M162 155Q175 167 188 155M212 155Q225 167 238 155"/><path d="M180 205Q200 223 220 205"/></g><path d="M70 90Q85 115 70 125Q55 115 70 90Z" fill="#a94f65" opacity=".5"/>'+star(330,70)+star(60,220)),
+corte:A('<path d="M50 90Q85 55 120 90T190 90" stroke="#c98a96" stroke-width="9" fill="none" stroke-linecap="round"/><g stroke="#a94f65" stroke-width="8" stroke-linecap="round" fill="none"><circle cx="105" cy="215" r="22"/><circle cx="160" cy="240" r="22"/><path d="M122 200L285 75M172 220L250 70"/></g><g transform="rotate(-25 300 220)"><rect x="240" y="205" width="90" height="26" rx="13" fill="#a94f65"/><rect x="320" y="195" width="50" height="46" rx="10" fill="#e9a9b5"/><g stroke="#3a2e32" stroke-width="3"><path d="M330 195v-14M340 195v-14M350 195v-14M360 195v-14"/></g></g>'+star(340,40))};
+const img=k=>ART[k]||ART.facial;
+D.admin={name:'Nuvia'};
+if(!D.seeded){D.services=[{id:'lifting',name:'Lifting de pestañas',desc:'Curvatura y definición natural de tus pestañas.',price:65000,dur:90,img:'lifting'},{id:'mani',name:'Manicure semipermanente',desc:'Esmalte de larga duración con acabado brillante.',price:45000,dur:60,img:'mani'},{id:'facial',name:'Limpieza facial profunda',desc:'Limpieza, extracción e hidratación para una piel fresca.',price:80000,dur:75,img:'facial'},{id:'corte',name:'Corte y cepillado',desc:'Corte a tu estilo con cepillado y acabado.',price:50000,dur:60,img:'corte'},...D.services];D.seeded=1;sv()}
+render();
+</script></body></html>
